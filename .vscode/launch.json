@@ -1,0 +1,46 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "run",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "txt2img.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--use_generic",
+                "True",
+                "--ddim_eta",
+                "1.0",
+                "--n_samples",
+                "6",
+                "--n_iter",
+                "1",
+                "--ddim_steps",
+                "50",
+                "--scale",
+                "5.0",
+                "--H",
+                "256",
+                "--W",
+                "256",
+                "--outdir",
+                "out_generic",
+                "--ckpt",
+                "trained_models/ds-fusion-generic.ckpt",
+                "--prompt",
+                "DRAGON R"
+            ]
+        }
+    ]
+}
