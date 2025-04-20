@@ -56,9 +56,9 @@ class ClassEmbedder(nn.Module):
 
 class TransformerEmbedder(AbstractEncoder):
     """Some transformer encoder layers"""
-    def __init__(self, n_embed, n_layer, vocab_size, max_seq_len=77, device="cuda"):
+    def __init__(self, n_embed, n_layer, vocab_size, max_seq_len=77, device=torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")):
         super().__init__()
-        self.device = device
+        self.device = "cpu" # device
         self.transformer = TransformerWrapper(num_tokens=vocab_size, max_seq_len=max_seq_len,
                                               attn_layers=Encoder(dim=n_embed, depth=n_layer))
 
@@ -73,11 +73,11 @@ class TransformerEmbedder(AbstractEncoder):
 
 class BERTTokenizer(AbstractEncoder):
     """ Uses a pretrained BERT tokenizer by huggingface. Vocab size: 30522 (?)"""
-    def __init__(self, device="cuda", vq_interface=True, max_length=77):
+    def __init__(self, device=torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"), vq_interface=True, max_length=77):
         super().__init__()
         from transformers import BertTokenizerFast  # TODO: add to reuquirements
         self.tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
-        self.device = device
+        self.device = "cpu" # device
         self.vq_interface = vq_interface
         self.max_length = max_length
 
@@ -101,12 +101,12 @@ class BERTTokenizer(AbstractEncoder):
 class BERTEmbedder(AbstractEncoder):
     """Uses the BERT tokenizr model and add some transformer encoder layers"""
     def __init__(self, n_embed, n_layer, vocab_size=30522, max_seq_len=77,
-                 device="cuda",use_tokenizer=True, embedding_dropout=0.0):
+                 device=torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"),use_tokenizer=True, embedding_dropout=0.0):
         super().__init__()
         self.use_tknz_fn = use_tokenizer
         if self.use_tknz_fn:
             self.tknz_fn = BERTTokenizer(vq_interface=False, max_length=max_seq_len)
-        self.device = device
+        self.device = "cpu" # device
         self.transformer = TransformerWrapper(num_tokens=vocab_size, max_seq_len=max_seq_len,
                                               attn_layers=Encoder(dim=n_embed, depth=n_layer),
                                               emb_dropout=embedding_dropout)
@@ -156,11 +156,11 @@ class SpatialRescaler(nn.Module):
 
 class FrozenCLIPEmbedder(AbstractEncoder):
     """Uses the CLIP transformer encoder for text (from Hugging Face)"""
-    def __init__(self, version="openai/clip-vit-large-patch14", device="cuda", max_length=77):
+    def __init__(self, version="openai/clip-vit-large-patch14", device=torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"), max_length=77):
         super().__init__()
         self.tokenizer = CLIPTokenizer.from_pretrained(version)
         self.transformer = CLIPTextModel.from_pretrained(version)
-        self.device = device
+        self.device = "cpu" # device
         self.max_length = max_length
 
         def embedding_forward(
@@ -328,10 +328,10 @@ class FrozenCLIPTextEmbedder(nn.Module):
     """
     Uses the CLIP transformer encoder for text.
     """
-    def __init__(self, version='ViT-L/14', device="cuda", max_length=77, n_repeat=1, normalize=True):
+    def __init__(self, version='ViT-L/14', device=torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"), max_length=77, n_repeat=1, normalize=True):
         super().__init__()
         self.model, _ = clip.load(version, jit=False, device="cpu")
-        self.device = device
+        self.device = "cpu" # device
         self.max_length = max_length
         self.n_repeat = n_repeat
         self.normalize = normalize
