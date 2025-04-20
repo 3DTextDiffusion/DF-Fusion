@@ -23,7 +23,7 @@
                 "--ddim_eta",
                 "1.0",
                 "--n_samples",
-                "6",
+                "8",
                 "--n_iter",
                 "1",
                 "--ddim_steps",
@@ -39,8 +39,11 @@
                 "--ckpt",
                 "trained_models/ds-fusion-generic.ckpt",
                 "--prompt",
-                "DRAGON R"
-            ]
+                "DORAEMON"
+            ],
+            "env": {
+                "CUDA_VISIBLE_DEVICES": ""
+            }
         }
     ]
 }
